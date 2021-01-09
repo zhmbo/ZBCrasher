@@ -38,8 +38,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly) NSString *basePath;
 
 
-
-
 @end
 
 NS_ASSUME_NONNULL_END
