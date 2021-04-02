@@ -1,0 +1,6 @@
+framework module Pods_ZBCrasher_Tests {
+  umbrella header "Pods-ZBCrasher_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}
