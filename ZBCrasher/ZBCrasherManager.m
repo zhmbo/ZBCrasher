@@ -28,7 +28,7 @@
 
 #if __has_include(<ZBCrasherManager/ZBCrasherManager.h>)
 #import <ZBCrasher/ZBCrasher.h>
-#import <ZBCrasherManager/ZBCrasherManager.h>
+#import <ZBCrasher/ZBCrasherManager.h>
 #else
 #import "ZBCrasher.h"
 #import "ZBCrasherManager.h"
@@ -36,6 +36,7 @@
 
 #import "ZBCrasherHandlerDelegate.h"
 #import "ZBNSExceptionHandler.h"
+#import "ZBSignalHandler.h"
 
 /** @internal
  * Crasher cache directory name. */
@@ -49,7 +50,11 @@ static NSString *ZBCRASH_LIVE_CRASHREPORT = @"live_report.plcrash";
  * Directory containing crash reports queued for sending. */
 static NSString *ZBCRASH_QUEUED_DIR = @"queued_reports";
 
-@interface ZBCrasherManager()<ZBCrasherHandlerDelegate> 
+/* @internal
+ * crash call back */
+static ZBCrasherCallback crashCallback;
+
+@interface ZBCrasherManager()<ZBCrasherHandlerDelegate>
 
 @end
 
@@ -64,6 +69,10 @@ static NSString *ZBCRASH_QUEUED_DIR = @"queued_reports";
 @end
 
 @implementation ZBCrasherManager
+
++ (NSString *)version {
+    return @"0.1.0";
+}
 
 /* (Deprecated) Crash manager singleton. */
 static ZBCrasherManager *_manager = nil;
@@ -106,7 +115,6 @@ static ZBCrasherManager *_manager = nil;
     /* Check for a live crash report file */
     return [[NSFileManager defaultManager] fileExistsAtPath: [self crashReportPath]];
 }
-
 
 /**
  * If an application has a pending crash report, this method returns the crash
@@ -205,6 +213,7 @@ static ZBCrasherManager *_manager = nil;
     if (![self populateCrasherDirectoryAndReturnError: outError])
         return NO;
     
+    /* register crash report */
     [self zb_registerCrashReport];
     
     /* Success */
@@ -213,17 +222,37 @@ static ZBCrasherManager *_manager = nil;
 }
 
 - (void)zb_registerCrashReport {
+    // exception handler
     [ZBNSExceptionHandler handler].delegate = self;
     [ZBNSExceptionHandler zb_registerUncaughtExceptionHandler];
+    // signal handler
+    [ZBSignalHandler handler].delegate = self;
+    [ZBSignalHandler zb_registerSignalHandler];
 }
 
 // MARK: - crash handler delegate
 - (void)zb_crashHandlerModel:(nonnull ZBCrasherModel *)model {
     
+    // write file
+    
+    // av cloud
+    
+    // call back
+    if (crashCallback != NULL) {
+        crashCallback(model);
+    }
+    
+    // un register
+    [ZBNSExceptionHandler zb_unRegisterUncaughtExceptionHandler];
+    [ZBSignalHandler zb_unRegisterSignalHandler];
+}
+
+/* set crash call back*/
+- (void)setCrasherCallBack:(ZBCrasherCallback)callback {
+    crashCallback = callback;
 }
 
 @end
-
 
 /**
  * @internal

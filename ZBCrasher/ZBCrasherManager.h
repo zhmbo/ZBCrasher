@@ -29,12 +29,22 @@
 #import <Foundation/Foundation.h>
 
 #if __has_include(<ZBCrasherConfig/ZBCrasherConfig.h>)
-#import <ZBCrasherConfig/ZBCrasherConfig.h>
+#import <ZBCrasher/ZBCrasherConfig.h>
+#import <ZBCrasher/ZBCrasherModel.h>
 #else
 #import "ZBCrasherConfig.h"
+#import "ZBCrasherModel.h"
 #endif
 
 NS_ASSUME_NONNULL_BEGIN
+
+/**
+ * @ingroup functions
+ *
+ * Prototype of a callback function used to crash call back information as provided
+ * @param crashModel crash info model.
+ */
+typedef void (*ZBCrasherCallback)(ZBCrasherModel *crashModel);
 
 @interface ZBCrasherManager : NSObject {
 @private
@@ -57,6 +67,10 @@ NS_ASSUME_NONNULL_BEGIN
     __strong NSString *_crashReportDirectory;
 }
 
+/* lib version */
++ (NSString *)version;
+
+/* (Deprecated) Crash manager singleton. */
 + (ZBCrasherManager *) manager __attribute__((deprecated));
 
 /**
@@ -149,6 +163,16 @@ NS_ASSUME_NONNULL_BEGIN
  * This restriction may be removed in a future release.
  */
 - (BOOL) enableCrasherAndReturnError: (NSError **) outError;
+
+/**
+ * Set the callbacks that will be executed by the receiver after a crash has occured and been recorded by ZBCrasherManager.
+ *
+ * @param callback A pointer to an initialized PLCrashReporterCallbacks structure.
+ *
+ * @note This method must be called prior to ZBCrasherManager::enableCrasher or
+ * ZBCrasherManager::enableCrasherAndReturnError:
+ */
+- (void) setCrasherCallBack:(ZBCrasherCallback) callback;
 
 @end
 
