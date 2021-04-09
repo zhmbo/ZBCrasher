@@ -27,6 +27,10 @@
 		DB989712261EA5B100D6E530 /* ZBCrashReport.podspec in Resources */ = {isa = PBXBuildFile; fileRef = DB98970F261EA5B100D6E530 /* ZBCrashReport.podspec */; };
 		DB989719261EB84400D6E530 /* ZBCrasher.h in Headers */ = {isa = PBXBuildFile; fileRef = DB989717261EB84400D6E530 /* ZBCrasher.h */; };
 		DB98971A261EB84400D6E530 /* ZBCrasher.m in Sources */ = {isa = PBXBuildFile; fileRef = DB989718261EB84400D6E530 /* ZBCrasher.m */; };
+		DBDE3D2326202E9500F381FE /* ZBCrasherFileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = DBDE3D2126202E9500F381FE /* ZBCrasherFileManager.h */; };
+		DBDE3D2426202E9500F381FE /* ZBCrasherFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDE3D2226202E9500F381FE /* ZBCrasherFileManager.m */; };
+		DBDE3D2B26202EBA00F381FE /* ZBCrasherAVCloud.h in Headers */ = {isa = PBXBuildFile; fileRef = DBDE3D2926202EBA00F381FE /* ZBCrasherAVCloud.h */; };
+		DBDE3D2C26202EBA00F381FE /* ZBCrasherAVCloud.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDE3D2A26202EBA00F381FE /* ZBCrasherAVCloud.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +68,10 @@
 		DB989717261EB84400D6E530 /* ZBCrasher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZBCrasher.h; sourceTree = "<group>"; };
 		DB989718261EB84400D6E530 /* ZBCrasher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBCrasher.m; sourceTree = "<group>"; };
 		DB98971F261EBB1500D6E530 /* ZBCrasherMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZBCrasherMacros.h; sourceTree = "<group>"; };
+		DBDE3D2126202E9500F381FE /* ZBCrasherFileManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZBCrasherFileManager.h; sourceTree = "<group>"; };
+		DBDE3D2226202E9500F381FE /* ZBCrasherFileManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBCrasherFileManager.m; sourceTree = "<group>"; };
+		DBDE3D2926202EBA00F381FE /* ZBCrasherAVCloud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZBCrasherAVCloud.h; sourceTree = "<group>"; };
+		DBDE3D2A26202EBA00F381FE /* ZBCrasherAVCloud.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBCrasherAVCloud.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,11 +121,15 @@
 				DB989703261EA4F500D6E530 /* ZBCrasherConfig.m */,
 				DB9896EF261DC20F00D6E530 /* ZBCrasherBacktrace.h */,
 				DB9896E9261DC20F00D6E530 /* ZBCrasherBacktrace.m */,
-				DB9896E4261DC20F00D6E530 /* ZBCrasherHandlerDelegate.h */,
 				DB9896E8261DC20F00D6E530 /* ZBCrasherManager.h */,
 				DB9896E7261DC20F00D6E530 /* ZBCrasherManager.m */,
+				DBDE3D2126202E9500F381FE /* ZBCrasherFileManager.h */,
+				DBDE3D2226202E9500F381FE /* ZBCrasherFileManager.m */,
+				DBDE3D2926202EBA00F381FE /* ZBCrasherAVCloud.h */,
+				DBDE3D2A26202EBA00F381FE /* ZBCrasherAVCloud.m */,
 				DB9896EA261DC20F00D6E530 /* ZBCrasherModel.h */,
 				DB9896E5261DC20F00D6E530 /* ZBCrasherModel.m */,
+				DB9896E4261DC20F00D6E530 /* ZBCrasherHandlerDelegate.h */,
 				DB9896ED261DC20F00D6E530 /* ZBNSExceptionHandler.h */,
 				DB9896EC261DC20F00D6E530 /* ZBNSExceptionHandler.m */,
 				DB9896E6261DC20F00D6E530 /* ZBSignalHandler.h */,
@@ -154,7 +166,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBDE3D2326202E9500F381FE /* ZBCrasherFileManager.h in Headers */,
 				DB989704261EA4F500D6E530 /* ZBCrasherConfig.h in Headers */,
+				DBDE3D2B26202EBA00F381FE /* ZBCrasherAVCloud.h in Headers */,
 				DB9896F2261DC20F00D6E530 /* ZBSignalHandler.h in Headers */,
 				DB9896F0261DC20F00D6E530 /* ZBCrasherHandlerDelegate.h in Headers */,
 				DB9896F9261DC20F00D6E530 /* ZBNSExceptionHandler.h in Headers */,
@@ -264,12 +278,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBDE3D2426202E9500F381FE /* ZBCrasherFileManager.m in Sources */,
 				DB9896F7261DC20F00D6E530 /* ZBSignalHandler.m in Sources */,
 				DB9896F8261DC20F00D6E530 /* ZBNSExceptionHandler.m in Sources */,
 				DB9896F5261DC20F00D6E530 /* ZBCrasherBacktrace.m in Sources */,
 				DB9896F1261DC20F00D6E530 /* ZBCrasherModel.m in Sources */,
 				DB9896F3261DC20F00D6E530 /* ZBCrasherManager.m in Sources */,
 				DB989705261EA4F500D6E530 /* ZBCrasherConfig.m in Sources */,
+				DBDE3D2C26202EBA00F381FE /* ZBCrasherAVCloud.m in Sources */,
 				DB98971A261EB84400D6E530 /* ZBCrasher.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
