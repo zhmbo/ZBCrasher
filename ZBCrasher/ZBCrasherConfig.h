@@ -37,6 +37,11 @@ NS_ASSUME_NONNULL_BEGIN
 /** The base path to save the crash data. */
 @property(nonatomic, readonly) NSString *basePath;
 
+/** The app id to init avcloud */
+@property(nonatomic, readonly) NSString *appId;
+
+/** The app key to init avcloud */
+@property(nonatomic, readonly) NSString *appKey;
 
 @end
 

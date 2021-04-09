@@ -37,4 +37,51 @@
     return [[self alloc] init];
 }
 
+/**
+ * Initialize a new ZBCrasherConfig instance using the default configuration.
+ */
+- (instancetype)init {
+    return [self initWithBasePath:nil appId:nil appKey:nil];
+}
+
+/**
+ * Initialize a new ZBCrasherConfig instance using the default configuration and custom crash data save path. The default configuration
+ *
+ * @param basePath The base path to save the crash data
+ */
+- (instancetype)initWithBasePath:(NSString *)basePath {
+    return [self initWithBasePath:basePath appId:nil appKey:nil];
+}
+
+/**
+ * Initialize a new ZBCrasherConfig instance.
+ *
+ * @param appId Initialize the id used by avcloud.
+ * @param appKey Initialize the key used by avcloud.
+ */
+- (instancetype)initWithAppId:(NSString *)appId
+                       appKey:(NSString *)appKey {
+    return [self initWithBasePath:nil appId:appId appKey:appKey];
+}
+
+/**
+ * Initialize a new ZBCrasherConfig instance.
+ *
+ * @param basePath The base path to save the crash data.
+ * @param appId Initialize the id used by avcloud.
+ * @param appKey Initialize the key used by avcloud.
+ */
+- (instancetype)initWithBasePath:(NSString *)basePath
+                           appId:(NSString *)appId
+                          appKey:(NSString *)appKey
+{
+    if ((self = [super init]) == nil)
+        return nil;
+    
+    _basePath = basePath;
+    _appId = appId;
+    _appKey = appKey;
+    
+    return self;
+}
 @end
