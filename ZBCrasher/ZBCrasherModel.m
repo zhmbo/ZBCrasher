@@ -30,4 +30,27 @@
 
 @implementation ZBCrasherModel
 
+- (NSString *)bundleId {
+    return [[NSBundle mainBundle] bundleIdentifier];
+}
+
+- (NSString *)bundleVersion {
+    return [[[NSBundle mainBundle] infoDictionary] objectForKey: (NSString *) kCFBundleVersionKey];
+}
+
+- (NSString *)appVersion {
+    return [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"];
+}
+
+- (NSDictionary *)toDictionary {
+    return @{
+        @"name"         : self.name             ?:@"" ,
+        @"reason"       : self.reason           ?:@"" ,
+        @"stacks"       : [NSString stringWithFormat:@"%@",self.stacks] ?:@"" ,
+        @"bundleId"     : self.bundleId         ?:@"" ,
+        @"bundleVersion": self.bundleVersion    ?:@"" ,
+        @"appVersion"   : self.appVersion       ?:@""
+    };
+}
+
 @end

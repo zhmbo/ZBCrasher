@@ -45,8 +45,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Cause of collapse
  */
-@property (nonatomic, strong) NSString *reason;
+@property (nonatomic, copy) NSString *reason;
 
+// device info
+@property (nonatomic, copy) NSString * bundleId;
+@property (nonatomic, copy) NSString * bundleVersion;
+@property (nonatomic, copy) NSString * appVersion;
+
+/*
+ to dict
+ */
+- (NSDictionary *)toDictionary;
 @end
 
 NS_ASSUME_NONNULL_END
