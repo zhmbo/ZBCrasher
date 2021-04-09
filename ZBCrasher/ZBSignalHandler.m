@@ -33,12 +33,6 @@
 
 #include <libkern/OSAtomic.h>
 
-volatile int32_t zbUncaughtExceptionCount = 0;
-const int32_t zbUncaughtExceptionMaximum = 10;
-
-void zb_signalHandler(int signal);
-int zb_signalIndex(int signal);
-
 static int s_fatal_signals[] = {
     SIGABRT,
     SIGBUS,
@@ -61,11 +55,28 @@ static const char* s_fatal_signal_names[] = {
     "SIGKILL",
 };
 
-static int s_fatal_signal_num = sizeof(s_fatal_signals) / sizeof(s_fatal_signals[0]); 
+volatile int32_t zbUncaughtExceptionCount = 0;
+const int32_t zbUncaughtExceptionMaximum = 10;
+
+void zb_signalHandler(int signal);
+int zb_signalIndex(int signal);
+
+static int s_fatal_signal_num = sizeof(s_fatal_signals) / sizeof(s_fatal_signals[0]);
+
+static id _handler;
+static dispatch_once_t t;
 
 @implementation ZBSignalHandler
 
 // MARK: public
+
+/**
+ * Single
+ */
++ (instancetype)handler {
+    dispatch_once(&t, ^{ _handler = [[ZBSignalHandler alloc] init]; });
+    return _handler;
+}
 
 /**
  * linux error signal capture
@@ -90,7 +101,8 @@ static int s_fatal_signal_num = sizeof(s_fatal_signals) / sizeof(s_fatal_signals
 // signal processing method
 void zb_signalHandler(int signal)
 {
-    int32_t exceptionCount = OSAtomicIncrement32(&zbUncaughtExceptionCount);//自动增加一个32位的值
+    /** Automatically add a 32-bit value */
+    int32_t exceptionCount = OSAtomicIncrement32(&zbUncaughtExceptionCount);
     
     if (exceptionCount > zbUncaughtExceptionMaximum) return;
     
@@ -104,6 +116,12 @@ void zb_signalHandler(int signal)
     model.stacks = callStacks;
     model.name = name;
     model.reason = reason;
+    
+    // Send model to implementation proxy class
+    ZBSignalHandler *_handler = [ZBSignalHandler handler];
+    if (_handler.delegate && [_handler.delegate respondsToSelector:@selector(zb_crashHandlerModel:)]) {
+        [_handler.delegate zb_crashHandlerModel:model];
+    }
 }
 
 int zb_signalIndex(int signal)

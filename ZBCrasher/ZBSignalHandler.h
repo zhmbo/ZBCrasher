@@ -27,6 +27,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "ZBCrasherHandlerDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -281,6 +282,11 @@ In debug mode, if you trigger a signal crash, the application will crash directl
 */
 
 /**
+ * Single
+ */
++ (instancetype)handler;
+
+/**
  * Register Linux error signal capture.
  */
 + (void)zb_registerSignalHandler;
@@ -289,6 +295,11 @@ In debug mode, if you trigger a signal crash, the application will crash directl
  * Unregister Linux error signal capture.
  */
 + (void)zb_unRegisterSignalHandler;
+
+/**
+ * Send crash log through this Agreement.
+ */
+@property (nonatomic, weak) id<ZBCrasherHandlerDelegate> delegate;
 
 @end
 
