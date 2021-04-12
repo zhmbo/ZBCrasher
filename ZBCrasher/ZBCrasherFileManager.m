@@ -28,6 +28,87 @@
 
 #import "ZBCrasherFileManager.h"
 
+/** @internal
+ * Crasher cache directory name. */
+static NSString *ZBCRASH_CACHE_DIR = @"com.itzhangbao.zbcrasher.data";
+
+/** @internal
+ * Crash Report file name. */
+static NSString *ZBCRASH_LIVE_CRASHREPORT = @"live_report.zbcrasher";
+
+/** @internal
+ * Directory containing crash reports queued for sending. */
+static NSString *ZBCRASH_QUEUED_DIR = @"queued_reports";
+
 @implementation ZBCrasherFileManager
+
+- (instancetype)init
+{
+    return [self initWithBasePath:@"" appId:@""];
+}
+
+- (instancetype)initWithBasePath:(NSString *)basePath appId:(NSString *)appId
+{
+    if ((self = [super init]) == nil)
+        return nil;
+    _crashReportDirectory = [[basePath stringByAppendingPathComponent: ZBCRASH_CACHE_DIR] stringByAppendingPathComponent: appId];
+    return self;
+}
+
+/**
+ * Validate (and create if necessary) the crash reporter directory structure.
+ */
+- (BOOL) populateCrasherDirectoryAndReturnError: (NSError **) outError {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    /* Set up reasonable directory attributes */
+    NSDictionary *attributes = [NSDictionary dictionaryWithObject: [NSNumber numberWithUnsignedLong: 0755] forKey: NSFilePosixPermissions];
+    
+    /* Create the top-level path */
+    if (![fm fileExistsAtPath: [self crasherDirectory]] &&
+        ![fm createDirectoryAtPath: [self crasherDirectory] withIntermediateDirectories: YES attributes: attributes error: outError])
+    {
+        return NO;
+    }
+
+    /* Create the queued crash report directory */
+    if (![fm fileExistsAtPath: [self queuedCrasherDirectory]] &&
+        ![fm createDirectoryAtPath: [self queuedCrasherDirectory] withIntermediateDirectories: YES attributes: attributes error: outError])
+    {
+        return NO;
+    }
+
+    return YES;
+}
+
+/**
+ * Return the path to the crash reporter data directory.
+ */
+- (NSString *) crasherDirectory {
+    return _crashReportDirectory;
+}
+
+/**
+ * Return the path to to-be-sent crash reports.
+ */
+- (NSString *) queuedCrasherDirectory {
+    return [[self crasherDirectory] stringByAppendingPathComponent: ZBCRASH_QUEUED_DIR];
+}
+
+/**
+ * Return the path to live crash report (which may not yet, or ever, exist).
+ */
+- (NSString *) crashReportPath {
+    return [[self crasherDirectory] stringByAppendingPathComponent: ZBCRASH_LIVE_CRASHREPORT];
+}
+
+/**
+ * Returns YES if the application has previously crashed and
+ * an pending crash report is available.
+ */
+- (BOOL) hasPendingCrashReport {
+    /* Check for a live crash report file */
+    return [[NSFileManager defaultManager] fileExistsAtPath: [self crashReportPath]];
+}
 
 @end

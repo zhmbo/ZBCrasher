@@ -30,7 +30,39 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZBCrasherFileManager : NSObject
+@interface ZBCrasherFileManager : NSObject {
+    
+    /** Path to the crash reporter internal data directory */
+    __strong NSString *_crashReportDirectory;
+}
+
+- (instancetype)initWithBasePath:(NSString *)basePath appId:(NSString *)appId;
+
+/**
+ * Validate (and create if necessary) the crash reporter directory structure.
+ */
+- (BOOL) populateCrasherDirectoryAndReturnError: (NSError **) outError;
+
+/**
+ * Return the path to the crash reporter data directory.
+ */
+- (NSString *) crasherDirectory;
+
+/**
+ * Return the path to to-be-sent crash reports.
+ */
+- (NSString *) queuedCrasherDirectory;
+
+/**
+ * Return the path to live crash report (which may not yet, or ever, exist).
+ */
+- (NSString *) crashReportPath;
+
+/**
+ * Returns YES if the application has previously crashed and
+ * an pending crash report is available.
+ */
+- (BOOL) hasPendingCrashReport;
 
 @end
 
