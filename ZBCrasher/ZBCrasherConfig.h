@@ -32,7 +32,43 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ZBCrasherConfig : NSObject
 
+/**
+ * Return the default local configuration.
+ */
 + (instancetype) defaultConfiguration;
+
+/**
+ * Initialize a new ZBCrasherConfig instance using the default configuration and custom crash data save path. The default configuration
+ *
+ * @param basePath The base path to save the crash data
+ */
+- (instancetype)initWithBasePath:(NSString *)basePath;
+
+/**
+ * Initialize a new ZBCrasherConfig instance.
+ *
+ * @param appId Initialize the id used by avcloud.
+ * @param appKey Initialize the key used by avcloud.
+ */
+- (instancetype)initWithAppId:(NSString *)appId
+                       appKey:(NSString *)appKey;
+
+/**
+ * Initialize a new ZBCrasherConfig instance.
+ *
+ * @param basePath The base path to save the crash data.
+ * @param appId Initialize the id used by avcloud.
+ * @param appKey Initialize the key used by avcloud.
+ */
+- (instancetype)initWithBasePath:(nullable NSString *)basePath
+                           appId:(nullable NSString *)appId
+                          appKey:(nullable NSString *)appKey;
+
+/** Crash pop up in development environment */
+@property (nonatomic, assign) BOOL debugAlert;
+
+/** Output of ZBCrasher console in development environment */
+@property (nonatomic, assign) BOOL debugNSlog;
 
 /** The base path to save the crash data. */
 @property(nonatomic, readonly) NSString *basePath;

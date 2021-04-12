@@ -72,8 +72,8 @@
  * @param appKey Initialize the key used by avcloud.
  */
 - (instancetype)initWithBasePath:(NSString *)basePath
-                           appId:(NSString *)appId
-                          appKey:(NSString *)appKey
+                           appId:(nullable NSString *)appId
+                          appKey:(nullable NSString *)appKey
 {
     if ((self = [super init]) == nil)
         return nil;
