@@ -26,6 +26,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#import <UIKit/UIKit.h>
+
 #if __has_include(<ZBCrasherManager/ZBCrasherManager.h>)
 #import <ZBCrasher/ZBCrasher.h>
 #import <ZBCrasher/ZBCrasherManager.h>
@@ -37,18 +39,9 @@
 #import "ZBCrasherHandlerDelegate.h"
 #import "ZBNSExceptionHandler.h"
 #import "ZBSignalHandler.h"
+#import "ZBCrasherFileManager.h"
 
-/** @internal
- * Crasher cache directory name. */
-static NSString *ZBCRASH_CACHE_DIR = @"com.itzhangbao.crasher.data";
-
-/** @internal
- * Crash Report file name. */
-static NSString *ZBCRASH_LIVE_CRASHREPORT = @"live_report.plcrash";
-
-/** @internal
- * Directory containing crash reports queued for sending. */
-static NSString *ZBCRASH_QUEUED_DIR = @"queued_reports";
+static BOOL dismissed = NO;
 
 /* @internal
  * crash call back */
@@ -56,16 +49,18 @@ static ZBCrasherCallback crashCallback;
 
 @interface ZBCrasherManager()<ZBCrasherHandlerDelegate>
 
+@property (nonatomic, strong) ZBCrasherFileManager *fileManager;
+
 @end
 
 @interface ZBCrasherManager (PrivateMethods)
 
 - (id) initWithBundle:(NSBundle *)bundle configuration:(ZBCrasherConfig *)configuration;
+- (id) initWithApplicationIdentifier: (NSString *) applicationIdentifier appVersion: (NSString *) applicationVersion appMarketingVersion: (NSString *) applicationMarketingVersion configuration: (ZBCrasherConfig *) configuration;
+/// Crash information pop up
+/// @param crashModel Crash information model
+- (void)crashInformationAlert:(ZBCrasherModel *)crashModel;
 
-- (BOOL) populateCrasherDirectoryAndReturnError: (NSError **) outError;
-- (NSString *) crasherDirectory;
-- (NSString *) queuedCrasherDirectory;
-- (NSString *) crashReportPath;
 @end
 
 @implementation ZBCrasherManager
@@ -113,7 +108,7 @@ static ZBCrasherManager *_manager = nil;
  */
 - (BOOL) hasPendingCrashReport {
     /* Check for a live crash report file */
-    return [[NSFileManager defaultManager] fileExistsAtPath: [self crashReportPath]];
+    return [_fileManager hasPendingCrashReport];
 }
 
 /**
@@ -145,7 +140,7 @@ static ZBCrasherManager *_manager = nil;
  */
 - (NSData *) loadPendingCrashReportDataAndReturnError: (NSError **) outError {
     /* Load the (memory mapped) data */
-    return [NSData dataWithContentsOfFile: [self crashReportPath] options: NSMappedRead error: outError];
+    return [NSData dataWithContentsOfFile: [_fileManager crashReportPath] options: NSMappedRead error: outError];
 }
 
 /**
@@ -163,7 +158,7 @@ static ZBCrasherManager *_manager = nil;
  * @return Returns YES on success, or NO on error.
  */
 - (BOOL) purgePendingCrashReportAndReturnError: (NSError **) outError {
-    return [[NSFileManager defaultManager] removeItemAtPath: [self crashReportPath] error: outError];
+    return [[NSFileManager defaultManager] removeItemAtPath: [_fileManager crashReportPath] error: outError];
 }
 
 /**
@@ -210,7 +205,7 @@ static ZBCrasherManager *_manager = nil;
         [NSException raise: ZBCrasherException format: @"The crash reporter has alread been enabled"];
 
     /* Create the directory tree */
-    if (![self populateCrasherDirectoryAndReturnError: outError])
+    if (![_fileManager populateCrasherDirectoryAndReturnError: outError])
         return NO;
     
     /* register crash report */
@@ -222,9 +217,11 @@ static ZBCrasherManager *_manager = nil;
 }
 
 - (void)zb_registerCrashReport {
+    
     // exception handler
     [ZBNSExceptionHandler handler].delegate = self;
     [ZBNSExceptionHandler zb_registerUncaughtExceptionHandler];
+    
     // signal handler
     [ZBSignalHandler handler].delegate = self;
     [ZBSignalHandler zb_registerSignalHandler];
@@ -232,6 +229,11 @@ static ZBCrasherManager *_manager = nil;
 
 // MARK: - crash handler delegate
 - (void)zb_crashHandlerModel:(nonnull ZBCrasherModel *)model {
+    
+    //debug alert
+    if (_config.debugAlert) {
+        [self crashInformationAlert:model];
+    }
     
     // write file
     
@@ -294,7 +296,8 @@ static ZBCrasherManager *_manager = nil;
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         basePath = [paths objectAtIndex: 0];
     }
-    _crashReportDirectory = [[basePath stringByAppendingPathComponent: ZBCRASH_CACHE_DIR] stringByAppendingPathComponent: appIdPath];
+    
+    _fileManager = [[ZBCrasherFileManager alloc] initWithBasePath:basePath appId:appIdPath];
     
     return self;
 }
@@ -320,63 +323,44 @@ static ZBCrasherManager *_manager = nil;
             return nil;
         }
 
-//        PLCR_LOG("Warning -- bundle identifier, using process name %s", progname);
+//        ZBC_LOG("Warning -- bundle identifier, using process name %s", progname);
         bundleIdentifier = [NSString stringWithUTF8String: progname];
     }
 
     /* Verify that the version is available */
     if (bundleVersion == nil) {
-//        PLCR_LOG("Warning -- bundle version unavailable");
+//        ZBC_LOG("Warning -- bundle version unavailable");
         bundleVersion = @"";
     }
 
     return [self initWithApplicationIdentifier: bundleIdentifier appVersion: bundleVersion appMarketingVersion:bundleMarketingVersion configuration: configuration];
 }
 
-/**
- * Validate (and create if necessary) the crash reporter directory structure.
- */
-- (BOOL) populateCrasherDirectoryAndReturnError: (NSError **) outError {
-    NSFileManager *fm = [NSFileManager defaultManager];
+/// Crash information pop up
+/// @param crashModel Crash information model
+- (void)crashInformationAlert:(ZBCrasherModel *)crashModel {
     
-    /* Set up reasonable directory attributes */
-    NSDictionary *attributes = [NSDictionary dictionaryWithObject: [NSNumber numberWithUnsignedLong: 0755] forKey: NSFilePosixPermissions];
+    CFRunLoopRef runLoop = CFRunLoopGetCurrent();
+    CFArrayRef allModes = CFRunLoopCopyAllModes(runLoop);
     
-    /* Create the top-level path */
-    if (![fm fileExistsAtPath: [self crasherDirectory]] &&
-        ![fm createDirectoryAtPath: [self crasherDirectory] withIntermediateDirectories: YES attributes: attributes error: outError])
-    {
-        return NO;
+    NSString *crashString = [NSString stringWithFormat:@"timestamp：%@\n name：%@\n reason：%@\n stacks：%@\n bundleId：%@\n bundleVersion：%@\n appVersion：%@\n", crashModel.timestamp, crashModel.name, crashModel.reason, crashModel.stacks, crashModel.bundleId, crashModel.bundleVersion, crashModel.appVersion];
+    
+    UIAlertController *alert_vc = [UIAlertController alertControllerWithTitle:@"Crash！" message:crashString  preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *_continue = [UIAlertAction actionWithTitle:@"continue" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        dismissed = YES;
+    }];
+    [alert_vc addAction:_continue];
+    [UIApplication.sharedApplication.delegate.window.rootViewController presentViewController:alert_vc animated:YES completion:nil];
+    
+    //When the exception handling message is received, let the program start runloop to prevent the program from dying
+    while (!dismissed) {
+        for (NSString *mode in (__bridge NSArray *)allModes)
+        {
+            CFRunLoopRunInMode((CFStringRef)mode, 0.001, false);
+        }
     }
-
-    /* Create the queued crash report directory */
-    if (![fm fileExistsAtPath: [self queuedCrasherDirectory]] &&
-        ![fm createDirectoryAtPath: [self queuedCrasherDirectory] withIntermediateDirectories: YES attributes: attributes error: outError])
-    {
-        return NO;
-    }
-
-    return YES;
+    //When you click the Cancel button in the pop-up view, isdimised = yes, the above loop will jump out
+    CFRelease(allModes);
 }
 
-/**
- * Return the path to the crash reporter data directory.
- */
-- (NSString *) crasherDirectory {
-    return _crashReportDirectory;
-}
-
-/**
- * Return the path to to-be-sent crash reports.
- */
-- (NSString *) queuedCrasherDirectory {
-    return [[self crasherDirectory] stringByAppendingPathComponent: ZBCRASH_QUEUED_DIR];
-}
-
-/**
- * Return the path to live crash report (which may not yet, or ever, exist).
- */
-- (NSString *) crashReportPath {
-    return [[self crasherDirectory] stringByAppendingPathComponent: ZBCRASH_LIVE_CRASHREPORT];
-}
 @end

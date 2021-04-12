@@ -62,9 +62,6 @@ typedef void (*ZBCrasherCallback)(ZBCrasherModel *crashModel);
     
     /** Application marketing version */
     __strong NSString *_applicationMarketingVersion;
-
-    /** Path to the crash reporter internal data directory */
-    __strong NSString *_crashReportDirectory;
 }
 
 /* lib version */
