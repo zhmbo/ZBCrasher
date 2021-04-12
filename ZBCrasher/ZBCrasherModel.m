@@ -28,18 +28,50 @@
 
 #import "ZBCrasherModel.h"
 
+static NSString *_bundleIdentifier  = @"";
+static NSString *_bundleVersion     = @"";
+static NSString *_appVersion        = @"";
+
+static dispatch_once_t __t;
+
 @implementation ZBCrasherModel
 
+- (NSString *)timestamp {
+    return [NSString stringWithFormat:@"%f", [[NSDate dateWithTimeIntervalSinceNow:0] timeIntervalSince1970]];
+}
+
 - (NSString *)bundleId {
-    return [[NSBundle mainBundle] bundleIdentifier];
+    dispatch_once(&__t, ^{
+        
+        _bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+        
+        /* Verify that the identifier is available */
+        if (_bundleIdentifier == nil) {
+            const char *progname = getprogname();
+            if (progname == NULL) {
+                _bundleIdentifier = @"NoneId!";
+            }else {
+                //  ZBC_LOG("Warning -- bundle identifier, using process name %s", progname);
+                _bundleIdentifier = [NSString stringWithUTF8String: progname];
+            }
+
+        }
+    });
+    return _bundleIdentifier;
 }
 
 - (NSString *)bundleVersion {
-    return [[[NSBundle mainBundle] infoDictionary] objectForKey: (NSString *) kCFBundleVersionKey];
+    dispatch_once(&__t, ^{
+        _bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey: (NSString *) kCFBundleVersionKey];
+    });
+    return _bundleVersion;
 }
 
 - (NSString *)appVersion {
-    return [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"];
+    dispatch_once(&__t, ^{
+        _appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"];
+    });
+    return _appVersion;
 }
 
 - (NSDictionary *)toDictionary {
@@ -47,6 +79,8 @@
         @"name"         : self.name             ?:@"" ,
         @"reason"       : self.reason           ?:@"" ,
         @"stacks"       : [NSString stringWithFormat:@"%@",self.stacks] ?:@"" ,
+        @"timestamp"    : self.timestamp        ?:@"" ,
+        
         @"bundleId"     : self.bundleId         ?:@"" ,
         @"bundleVersion": self.bundleVersion    ?:@"" ,
         @"appVersion"   : self.appVersion       ?:@""

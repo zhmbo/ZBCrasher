@@ -47,6 +47,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, copy) NSString *reason;
 
+/**
+ * crash time. of 1000
+ */
+@property (nonatomic, copy) NSString *timestamp;
+
 // device info
 @property (nonatomic, copy) NSString * bundleId;
 @property (nonatomic, copy) NSString * bundleVersion;
