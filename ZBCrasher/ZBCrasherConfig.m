@@ -83,6 +83,9 @@
     _appId = appId;
     _appKey = appKey;
     
+    _debugAlert = YES;
+    _debugLog = YES;
+    
     return self;
 }
 
