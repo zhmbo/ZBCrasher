@@ -1,11 +1,6 @@
-//
-//  AppDelegate.m
-//  ZBCrasherDemo
-//
-//  Created by Jumbo on 2021/4/13.
-//
 
 #import "AppDelegate.h"
+#import <ZBCrasher/ZBCrasher.h>
 
 @interface AppDelegate ()
 
@@ -16,6 +11,18 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    /* Easy to use */
+    ZBCrasherManager *manager = [[ZBCrasherManager alloc] initWithConfiguration:[ZBCrasherConfig defaultConfiguration]];
+    [manager setCrasherCallBack:^(ZBCrasherModel * _Nonnull crashModel) {
+        NSLog(@"App crashed. %@", crashModel.reason);
+    }];
+    [manager setLastCrasherCallBack:^(ZBCrasherModel * _Nonnull crashModel) {
+        NSLog(@"App exited due to crash last time. %@", crashModel.reason);
+    }];
+    
+    [manager enableCrasher];
+    
     return YES;
 }
 

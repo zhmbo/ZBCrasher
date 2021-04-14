@@ -1,9 +1,3 @@
-//
-//  SceneDelegate.m
-//  ZBCrasherDemo
-//
-//  Created by Jumbo on 2021/4/13.
-//
 
 #import "SceneDelegate.h"
 

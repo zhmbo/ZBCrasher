@@ -14,7 +14,23 @@
 		DBDE3D6D26258F8F00F381FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBDE3D6C26258F8F00F381FE /* Assets.xcassets */; };
 		DBDE3D7026258F8F00F381FE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBDE3D6E26258F8F00F381FE /* LaunchScreen.storyboard */; };
 		DBDE3D7326258F8F00F381FE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDE3D7226258F8F00F381FE /* main.m */; };
+		DBDE3D7F2625901B00F381FE /* ZBCrasher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBDE3D7E2625901B00F381FE /* ZBCrasher.framework */; };
+		DBDE3D802625901B00F381FE /* ZBCrasher.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DBDE3D7E2625901B00F381FE /* ZBCrasher.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DBDE3D812625901C00F381FE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DBDE3D802625901B00F381FE /* ZBCrasher.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DBDE3D5D26258F8E00F381FE /* ZBCrasherDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZBCrasherDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -29,6 +45,7 @@
 		DBDE3D6F26258F8F00F381FE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DBDE3D7126258F8F00F381FE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DBDE3D7226258F8F00F381FE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DBDE3D7E2625901B00F381FE /* ZBCrasher.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ZBCrasher.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBDE3D7F2625901B00F381FE /* ZBCrasher.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,6 +65,7 @@
 			children = (
 				DBDE3D5F26258F8E00F381FE /* ZBCrasherDemo */,
 				DBDE3D5E26258F8E00F381FE /* Products */,
+				DBDE3D7D2625901B00F381FE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +95,14 @@
 			path = ZBCrasherDemo;
 			sourceTree = "<group>";
 		};
+		DBDE3D7D2625901B00F381FE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DBDE3D7E2625901B00F381FE /* ZBCrasher.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -86,6 +113,7 @@
 				DBDE3D5926258F8E00F381FE /* Sources */,
 				DBDE3D5A26258F8E00F381FE /* Frameworks */,
 				DBDE3D5B26258F8E00F381FE /* Resources */,
+				DBDE3D812625901C00F381FE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -292,12 +320,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W5ELC54N2N;
 				INFOPLIST_FILE = ZBCrasherDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = itzhangbao.ZBCrasherDemo;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jumbo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -309,12 +340,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W5ELC54N2N;
 				INFOPLIST_FILE = ZBCrasherDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = itzhangbao.ZBCrasherDemo;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jumbo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
