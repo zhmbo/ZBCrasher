@@ -6,6 +6,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "ZBCrasherMacros.h"
 
 @interface ZBCrasherTests : XCTestCase
 
@@ -24,6 +25,14 @@
 - (void)testExample {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
+    
+    NSDictionary *dict = [NSDictionary dictionary];
+    
+    NSString *value = dict[@"value"];
+    NSLog(@"value is %@", value);
+    
+    ZBC_LOG(@"test log 666");
+    
 }
 
 - (void)testPerformanceExample {

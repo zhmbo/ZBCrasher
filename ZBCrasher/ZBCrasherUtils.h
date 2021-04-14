@@ -28,13 +28,21 @@
 
 #import <Foundation/Foundation.h>
 
-@class ZBCrasherModel;
-
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ZBCrasherHandlerDelegate <NSObject>
+@interface ZBCrasherUtils : NSObject
 
-- (void)zb_crashHandlerModel:(ZBCrasherModel *)model;
+@end
+
+@interface NSDictionary(ZBDictionaryEx)
+
+- (NSString *)toString;
+
+@end
+
+@interface NSString(ZBStringEx)
+
+- (NSDictionary *)toDictionary;
 
 @end
 

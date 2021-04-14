@@ -27,6 +27,9 @@
  */
 
 #import "ZBCrasherFileManager.h"
+#import "ZBCrasherModel.h"
+#import "ZBCrasherUtils.h"
+#import "ZBCrasherMacros.h"
 
 /** @internal
  * Crasher cache directory name. */
@@ -53,6 +56,20 @@ static NSString *ZBCRASH_QUEUED_DIR = @"queued_reports";
         return nil;
     _crashReportDirectory = [[basePath stringByAppendingPathComponent: ZBCRASH_CACHE_DIR] stringByAppendingPathComponent: appId];
     return self;
+}
+
+/// Write a fatal crash report.
+/// @param model crashed infomation model
+- (BOOL) zb_crasherWriteReport:(ZBCrasherModel *)model {
+    NSDictionary *crashDict = model.toDictionary;
+    NSString *crashStr = crashDict.toString;
+    NSError *error;
+    [crashStr writeToFile:[self crasherDirectory] atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    if (error) {
+        ZBC_LOG(@"Error -- write crash report fail!");
+        return NO;
+    }
+    return YES;
 }
 
 /**

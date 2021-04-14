@@ -31,9 +31,11 @@
 #if __has_include(<ZBCrasherManager/ZBCrasherManager.h>)
 #import <ZBCrasher/ZBCrasher.h>
 #import <ZBCrasher/ZBCrasherManager.h>
+#import <ZBCrasher/ZBCrasherMacros.h>
 #else
 #import "ZBCrasher.h"
 #import "ZBCrasherManager.h"
+#import "ZBCrasherMacros.h"
 #endif
 
 #import "ZBCrasherHandlerDelegate.h"
@@ -323,13 +325,13 @@ static ZBCrasherManager *_manager = nil;
             return nil;
         }
 
-//        ZBC_LOG("Warning -- bundle identifier, using process name %s", progname);
+        ZBC_LOG(@"Warning -- bundle identifier, using process name %s", progname);
         bundleIdentifier = [NSString stringWithUTF8String: progname];
     }
 
     /* Verify that the version is available */
     if (bundleVersion == nil) {
-//        ZBC_LOG("Warning -- bundle version unavailable");
+        ZBC_LOG(@"Warning -- bundle version unavailable");
         bundleVersion = @"";
     }
 

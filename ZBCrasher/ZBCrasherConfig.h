@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL debugAlert;
 
 /** Output of ZBCrasher console in development environment */
-@property (nonatomic, assign) BOOL debugNSlog;
+@property (nonatomic, assign) BOOL debugLog;
 
 /** The base path to save the crash data. */
 @property(nonatomic, readonly) NSString *basePath;

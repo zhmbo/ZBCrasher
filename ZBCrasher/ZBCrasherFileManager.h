@@ -27,6 +27,7 @@
  */
 
 #import <Foundation/Foundation.h>
+@class ZBCrasherModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,6 +38,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (instancetype)initWithBasePath:(NSString *)basePath appId:(NSString *)appId;
+
+/// Write a fatal crash report.
+/// @param model crashed infomation model
+- (BOOL) zb_crasherWriteReport:(ZBCrasherModel *)model;
 
 /**
  * Validate (and create if necessary) the crash reporter directory structure.

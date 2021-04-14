@@ -27,6 +27,7 @@
  */
 
 #import "ZBCrasherConfig.h"
+#import "ZBCrasherMacros.h"
 
 @implementation ZBCrasherConfig
 
@@ -83,5 +84,9 @@
     _appKey = appKey;
     
     return self;
+}
+
+- (void)setDebugLog:(BOOL)debugLog {
+    ZBDEBUGLOG_ABLE = debugLog;
 }
 @end

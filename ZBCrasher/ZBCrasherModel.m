@@ -27,6 +27,7 @@
  */
 
 #import "ZBCrasherModel.h"
+#import "ZBCrasherMacros.h"
 
 static NSString *_bundleIdentifier  = @"";
 static NSString *_bundleVersion     = @"";
@@ -51,7 +52,7 @@ static dispatch_once_t __t;
             if (progname == NULL) {
                 _bundleIdentifier = @"NoneId!";
             }else {
-                //  ZBC_LOG("Warning -- bundle identifier, using process name %s", progname);
+                ZBC_LOG(@"Warning -- bundle identifier, using process name %s", progname);
                 _bundleIdentifier = [NSString stringWithUTF8String: progname];
             }
 
@@ -85,6 +86,22 @@ static dispatch_once_t __t;
         @"bundleVersion": self.bundleVersion    ?:@"" ,
         @"appVersion"   : self.appVersion       ?:@""
     };
+}
+
++ (ZBCrasherModel *)modelWithDictionary:(NSDictionary *)dict {
+    if (nil == dict && 0 == dict.count) {
+        return nil;
+    }
+    ZBCrasherModel *model = [[ZBCrasherModel alloc] init];
+    model.name          = dict[@"name"];
+    model.reason        = dict[@"reason"];
+    model.stacks        = dict[@"stacks"];
+    model.timestamp     = dict[@"timestamp"];
+    
+    model.bundleId      = dict[@"bundleId"];
+    model.bundleVersion = dict[@"bundleVersion"];
+    model.appVersion    = dict[@"appVersion"];
+    return model;
 }
 
 @end

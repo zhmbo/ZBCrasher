@@ -58,9 +58,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * appVersion;
 
 /*
- to dict
+ * The model to dictionary.
  */
 - (NSDictionary *)toDictionary;
+
+/**
+ * The dictionary to model.
+ */
++ (ZBCrasherModel *)modelWithDictionary:(NSDictionary *)dict;
+
 @end
 
 NS_ASSUME_NONNULL_END

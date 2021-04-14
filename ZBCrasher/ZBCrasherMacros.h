@@ -29,5 +29,23 @@
 #ifndef ZBCrasherMacros_h
 #define ZBCrasherMacros_h
 
+static BOOL ZBDEBUGLOG_ABLE = NO;
+
+#define DLOG(format, ...)\
+        do {\
+            printf("ZBCrasher: %s\n", \
+            [[NSString stringWithFormat:(format), ##__VA_ARGS__] UTF8String]);\
+        }while(0);\
+
+#define ZBC_DLOG(format,...)\
+        if(ZBDEBUGLOG_ABLE) {\
+            DLOG(format, ## __VA_ARGS__);\
+        } else {}\
+
+#ifdef ZBDEBUG
+#define ZBC_LOG(format,...) DLOG(format, ## __VA_ARGS__);
+#else
+#define ZBC_LOG(format,...) ZBC_DLOG(format, ## __VA_ARGS__);
+#endif
 
 #endif /* ZBCrasherMacros_h */

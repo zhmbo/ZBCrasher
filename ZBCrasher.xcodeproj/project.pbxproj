@@ -9,28 +9,29 @@
 /* Begin PBXBuildFile section */
 		DB9896D2261DC1A400D6E530 /* ZBCrasher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9896C8261DC1A400D6E530 /* ZBCrasher.framework */; };
 		DB9896D7261DC1A400D6E530 /* ZBCrasherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9896D6261DC1A400D6E530 /* ZBCrasherTests.m */; };
-		DB9896F0261DC20F00D6E530 /* ZBCrasherHandlerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = DB9896E4261DC20F00D6E530 /* ZBCrasherHandlerDelegate.h */; };
 		DB9896F1261DC20F00D6E530 /* ZBCrasherModel.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9896E5261DC20F00D6E530 /* ZBCrasherModel.m */; };
 		DB9896F2261DC20F00D6E530 /* ZBSignalHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = DB9896E6261DC20F00D6E530 /* ZBSignalHandler.h */; };
 		DB9896F3261DC20F00D6E530 /* ZBCrasherManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9896E7261DC20F00D6E530 /* ZBCrasherManager.m */; };
-		DB9896F4261DC20F00D6E530 /* ZBCrasherManager.h in Headers */ = {isa = PBXBuildFile; fileRef = DB9896E8261DC20F00D6E530 /* ZBCrasherManager.h */; };
+		DB9896F4261DC20F00D6E530 /* ZBCrasherManager.h in Headers */ = {isa = PBXBuildFile; fileRef = DB9896E8261DC20F00D6E530 /* ZBCrasherManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB9896F5261DC20F00D6E530 /* ZBCrasherBacktrace.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9896E9261DC20F00D6E530 /* ZBCrasherBacktrace.m */; };
-		DB9896F6261DC20F00D6E530 /* ZBCrasherModel.h in Headers */ = {isa = PBXBuildFile; fileRef = DB9896EA261DC20F00D6E530 /* ZBCrasherModel.h */; };
+		DB9896F6261DC20F00D6E530 /* ZBCrasherModel.h in Headers */ = {isa = PBXBuildFile; fileRef = DB9896EA261DC20F00D6E530 /* ZBCrasherModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB9896F7261DC20F00D6E530 /* ZBSignalHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9896EB261DC20F00D6E530 /* ZBSignalHandler.m */; };
 		DB9896F8261DC20F00D6E530 /* ZBNSExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9896EC261DC20F00D6E530 /* ZBNSExceptionHandler.m */; };
 		DB9896F9261DC20F00D6E530 /* ZBNSExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = DB9896ED261DC20F00D6E530 /* ZBNSExceptionHandler.h */; };
 		DB9896FB261DC20F00D6E530 /* ZBCrasherBacktrace.h in Headers */ = {isa = PBXBuildFile; fileRef = DB9896EF261DC20F00D6E530 /* ZBCrasherBacktrace.h */; };
-		DB989704261EA4F500D6E530 /* ZBCrasherConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = DB989702261EA4F500D6E530 /* ZBCrasherConfig.h */; };
+		DB989704261EA4F500D6E530 /* ZBCrasherConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = DB989702261EA4F500D6E530 /* ZBCrasherConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB989705261EA4F500D6E530 /* ZBCrasherConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = DB989703261EA4F500D6E530 /* ZBCrasherConfig.m */; };
 		DB989710261EA5B100D6E530 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = DB98970D261EA5B100D6E530 /* LICENSE */; };
 		DB989711261EA5B100D6E530 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DB98970E261EA5B100D6E530 /* README.md */; };
 		DB989712261EA5B100D6E530 /* ZBCrashReport.podspec in Resources */ = {isa = PBXBuildFile; fileRef = DB98970F261EA5B100D6E530 /* ZBCrashReport.podspec */; };
-		DB989719261EB84400D6E530 /* ZBCrasher.h in Headers */ = {isa = PBXBuildFile; fileRef = DB989717261EB84400D6E530 /* ZBCrasher.h */; };
+		DB989719261EB84400D6E530 /* ZBCrasher.h in Headers */ = {isa = PBXBuildFile; fileRef = DB989717261EB84400D6E530 /* ZBCrasher.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB98971A261EB84400D6E530 /* ZBCrasher.m in Sources */ = {isa = PBXBuildFile; fileRef = DB989718261EB84400D6E530 /* ZBCrasher.m */; };
 		DBDE3D2326202E9500F381FE /* ZBCrasherFileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = DBDE3D2126202E9500F381FE /* ZBCrasherFileManager.h */; };
 		DBDE3D2426202E9500F381FE /* ZBCrasherFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDE3D2226202E9500F381FE /* ZBCrasherFileManager.m */; };
 		DBDE3D2B26202EBA00F381FE /* ZBCrasherAVCloud.h in Headers */ = {isa = PBXBuildFile; fileRef = DBDE3D2926202EBA00F381FE /* ZBCrasherAVCloud.h */; };
 		DBDE3D2C26202EBA00F381FE /* ZBCrasherAVCloud.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDE3D2A26202EBA00F381FE /* ZBCrasherAVCloud.m */; };
+		DBDE3D422625747F00F381FE /* ZBCrasherUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = DBDE3D402625747F00F381FE /* ZBCrasherUtils.h */; };
+		DBDE3D432625747F00F381FE /* ZBCrasherUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDE3D412625747F00F381FE /* ZBCrasherUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,7 +50,6 @@
 		DB9896D1261DC1A400D6E530 /* ZBCrasherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZBCrasherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB9896D6261DC1A400D6E530 /* ZBCrasherTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBCrasherTests.m; sourceTree = "<group>"; };
 		DB9896D8261DC1A400D6E530 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DB9896E4261DC20F00D6E530 /* ZBCrasherHandlerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBCrasherHandlerDelegate.h; sourceTree = "<group>"; };
 		DB9896E5261DC20F00D6E530 /* ZBCrasherModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBCrasherModel.m; sourceTree = "<group>"; };
 		DB9896E6261DC20F00D6E530 /* ZBSignalHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBSignalHandler.h; sourceTree = "<group>"; };
 		DB9896E7261DC20F00D6E530 /* ZBCrasherManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBCrasherManager.m; sourceTree = "<group>"; };
@@ -72,6 +72,8 @@
 		DBDE3D2226202E9500F381FE /* ZBCrasherFileManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBCrasherFileManager.m; sourceTree = "<group>"; };
 		DBDE3D2926202EBA00F381FE /* ZBCrasherAVCloud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZBCrasherAVCloud.h; sourceTree = "<group>"; };
 		DBDE3D2A26202EBA00F381FE /* ZBCrasherAVCloud.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBCrasherAVCloud.m; sourceTree = "<group>"; };
+		DBDE3D402625747F00F381FE /* ZBCrasherUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZBCrasherUtils.h; sourceTree = "<group>"; };
+		DBDE3D412625747F00F381FE /* ZBCrasherUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBCrasherUtils.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,8 @@
 			children = (
 				DB989717261EB84400D6E530 /* ZBCrasher.h */,
 				DB989718261EB84400D6E530 /* ZBCrasher.m */,
+				DBDE3D402625747F00F381FE /* ZBCrasherUtils.h */,
+				DBDE3D412625747F00F381FE /* ZBCrasherUtils.m */,
 				DB989702261EA4F500D6E530 /* ZBCrasherConfig.h */,
 				DB989703261EA4F500D6E530 /* ZBCrasherConfig.m */,
 				DB9896EF261DC20F00D6E530 /* ZBCrasherBacktrace.h */,
@@ -129,7 +133,6 @@
 				DBDE3D2A26202EBA00F381FE /* ZBCrasherAVCloud.m */,
 				DB9896EA261DC20F00D6E530 /* ZBCrasherModel.h */,
 				DB9896E5261DC20F00D6E530 /* ZBCrasherModel.m */,
-				DB9896E4261DC20F00D6E530 /* ZBCrasherHandlerDelegate.h */,
 				DB9896ED261DC20F00D6E530 /* ZBNSExceptionHandler.h */,
 				DB9896EC261DC20F00D6E530 /* ZBNSExceptionHandler.m */,
 				DB9896E6261DC20F00D6E530 /* ZBSignalHandler.h */,
@@ -166,16 +169,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBDE3D2326202E9500F381FE /* ZBCrasherFileManager.h in Headers */,
+				DB989719261EB84400D6E530 /* ZBCrasher.h in Headers */,
+				DB9896F4261DC20F00D6E530 /* ZBCrasherManager.h in Headers */,
 				DB989704261EA4F500D6E530 /* ZBCrasherConfig.h in Headers */,
+				DB9896F6261DC20F00D6E530 /* ZBCrasherModel.h in Headers */,
+				DBDE3D2326202E9500F381FE /* ZBCrasherFileManager.h in Headers */,
 				DBDE3D2B26202EBA00F381FE /* ZBCrasherAVCloud.h in Headers */,
 				DB9896F2261DC20F00D6E530 /* ZBSignalHandler.h in Headers */,
-				DB9896F0261DC20F00D6E530 /* ZBCrasherHandlerDelegate.h in Headers */,
+				DBDE3D422625747F00F381FE /* ZBCrasherUtils.h in Headers */,
 				DB9896F9261DC20F00D6E530 /* ZBNSExceptionHandler.h in Headers */,
-				DB9896F6261DC20F00D6E530 /* ZBCrasherModel.h in Headers */,
-				DB989719261EB84400D6E530 /* ZBCrasher.h in Headers */,
 				DB9896FB261DC20F00D6E530 /* ZBCrasherBacktrace.h in Headers */,
-				DB9896F4261DC20F00D6E530 /* ZBCrasherManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,6 +284,7 @@
 				DBDE3D2426202E9500F381FE /* ZBCrasherFileManager.m in Sources */,
 				DB9896F7261DC20F00D6E530 /* ZBSignalHandler.m in Sources */,
 				DB9896F8261DC20F00D6E530 /* ZBNSExceptionHandler.m in Sources */,
+				DBDE3D432625747F00F381FE /* ZBCrasherUtils.m in Sources */,
 				DB9896F5261DC20F00D6E530 /* ZBCrasherBacktrace.m in Sources */,
 				DB9896F1261DC20F00D6E530 /* ZBCrasherModel.m in Sources */,
 				DB9896F3261DC20F00D6E530 /* ZBCrasherManager.m in Sources */,
@@ -351,10 +355,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "ZBDEBUG=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -411,6 +412,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "ZBDEBUG=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -436,6 +438,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = ZBCrasher/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
