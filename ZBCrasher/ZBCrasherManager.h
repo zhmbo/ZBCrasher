@@ -28,7 +28,7 @@
 
 #import <Foundation/Foundation.h>
 
-#if __has_include(<ZBCrasherConfig/ZBCrasherConfig.h>)
+#if __has_include(<ZBCrasher/ZBCrasherConfig.h>)
 #import <ZBCrasher/ZBCrasherConfig.h>
 #import <ZBCrasher/ZBCrasherModel.h>
 #else
@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Prototype of a callback function used to crash call back information as provided
  * @param crashModel crash info model.
  */
-typedef void (*ZBCrasherCallback)(ZBCrasherModel *crashModel);
+typedef void (^ZBCrasherCallback)(ZBCrasherModel *crashModel);
 
 @interface ZBCrasherManager : NSObject {
 @private
@@ -71,7 +71,7 @@ typedef void (*ZBCrasherCallback)(ZBCrasherModel *crashModel);
 + (ZBCrasherManager *) manager __attribute__((deprecated));
 
 /**
- * Initialize a new PLCrashReporter instance with the given configuration.
+ * Initialize a new ZBCrasher instance with the given configuration.
  *
  * @param configuration The configuration to be used by this reporter instance.
  */
@@ -88,7 +88,7 @@ typedef void (*ZBCrasherCallback)(ZBCrasherModel *crashModel);
  * report data.
  *
  * You may use this to submit the report to your own HTTP server, over e-mail, or even parse and
- * introspect the report locally using the PLCrashReport API.
+ * introspect the report locally using the ZBCrasher API.
  *
  * @return Returns nil if the crash report data could not be loaded.
  */
@@ -99,7 +99,7 @@ typedef void (*ZBCrasherCallback)(ZBCrasherModel *crashModel);
  * report data.
  *
  * You may use this to submit the report to your own HTTP server, over e-mail, or even parse and
- * introspect the report locally using the PLCrashReport API.
+ * introspect the report locally using the ZBCrasher API.
  
  * @param outError A pointer to an NSError object variable. If an error occurs, this pointer
  * will contain an error object indicating why the pending crash report could not be
@@ -143,10 +143,10 @@ typedef void (*ZBCrasherCallback)(ZBCrasherModel *crashModel);
  * result in a crash report being written prior to application exit.
  *
  * This method must only be invoked once. Further invocations will throw
- * a PLCrashReporterException.
+ * a ZBCrasherException.
  *
  * @param outError A pointer to an NSError object variable. If an error occurs, this pointer
- * will contain an error in the PLCrashReporterErrorDomain indicating why the Crash Reporter
+ * will contain an error in the ZBCrasherErrorDomain indicating why the Crash Reporter
  * could not be enabled. If no error occurs, this parameter will be left unmodified. You may
  * specify nil for this parameter, and no error information will be provided.
  *
@@ -155,8 +155,8 @@ typedef void (*ZBCrasherCallback)(ZBCrasherModel *crashModel);
  *
  * @par Registering Multiple Reporters
  *
- * Only one PLCrashReporter instance may be enabled in a process; attempting to enable an additional instance
- * will return NO and a PLCrashReporterErrorResourceBusy error, and the reporter will not be enabled.
+ * Only one ZBCrasher instance may be enabled in a process; attempting to enable an additional instance
+ * will return NO and a ZBCrasherErrorResourceBusy error, and the reporter will not be enabled.
  * This restriction may be removed in a future release.
  */
 - (BOOL) enableCrasherAndReturnError: (NSError **) outError;
@@ -164,12 +164,22 @@ typedef void (*ZBCrasherCallback)(ZBCrasherModel *crashModel);
 /**
  * Set the callbacks that will be executed by the receiver after a crash has occured and been recorded by ZBCrasherManager.
  *
- * @param callback A pointer to an initialized PLCrashReporterCallbacks structure.
+ * @param callback A pointer to an initialized ZBCrasherCallbacks structure.
  *
  * @note This method must be called prior to ZBCrasherManager::enableCrasher or
  * ZBCrasherManager::enableCrasherAndReturnError:
  */
 - (void) setCrasherCallBack:(ZBCrasherCallback) callback;
+
+/**
+ * Set the callback that will be executed by the receiver the next time the program starts after the crash has occurred and recorded by ZBCrasherManager。
+ *
+ * @param callback A pointer to an initialized ZBCrasherCallbacks structure.
+ *
+ * @note This method must be called prior to ZBCrasherManager::enableCrasher or
+ * ZBCrasherManager::enableCrasherAndReturnError:
+ */
+- (void) setLastCrasherCallBack:(ZBCrasherCallback) callback;
 
 @end
 

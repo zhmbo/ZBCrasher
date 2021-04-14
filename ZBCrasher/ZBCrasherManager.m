@@ -38,18 +38,76 @@
 #import "ZBCrasherMacros.h"
 #endif
 
-#import "ZBCrasherHandlerDelegate.h"
 #import "ZBNSExceptionHandler.h"
 #import "ZBSignalHandler.h"
 #import "ZBCrasherFileManager.h"
+#import "ZBCrasherUtils.h"
 
-static BOOL dismissed = NO;
 
 /* @internal
  * crash call back */
-static ZBCrasherCallback crashCallback;
+static ZBCrasherCallback __crash_callback;
+static ZBCrasherCallback __last_crash_callback;
 
-@interface ZBCrasherManager()<ZBCrasherHandlerDelegate>
+/* @internal
+ * Pop up with crash information when crash.
+ * It is recommended to enable this function in the development environment
+ */
+static UIAlertController *__debug_alert_vc = nil;
+static BOOL __alert_continue_clicked = NO;
+
+/* show alertview with model */
+void zbcrasher_alert_message(ZBCrasherModel *crashModel) {
+    NSString *crashString = [NSString stringWithFormat:@"timestamp：%@\n name：%@\n reason：%@\n stacks：%@\n bundleId：%@\n buildVersion：%@\n appVersion：%@\n", crashModel.timestamp, crashModel.name, crashModel.reason, crashModel.stacks, crashModel.bundleId, crashModel.buildVersion, crashModel.appVersion];
+    __debug_alert_vc.message = crashString;
+    [[ZBCrasherUtils getRootWindow].rootViewController presentViewController:__debug_alert_vc animated:YES completion:nil];
+}
+
+/// Crash information pop up runlooping.
+/// @param crashModel Crash information model.
+void crash_information_alert_runlooping(ZBCrasherModel *crashModel) {
+    
+    CFRunLoopRef runLoop = CFRunLoopGetCurrent();
+    CFArrayRef allModes = CFRunLoopCopyAllModes(runLoop);
+    
+    /* show alert view with model */
+    zbcrasher_alert_message(crashModel);
+    
+    //When the exception handling message is received, let the program start runloop to prevent the program from dying
+    while (!__alert_continue_clicked) {
+        for (NSString *mode in (__bridge NSArray *)allModes)
+        {
+            CFRunLoopRunInMode((CFStringRef)mode, 0.001, false);
+        }
+    }
+    //When you click the Cancel button in the pop-up view, isdimised = yes, the above loop will jump out
+    CFRelease(allModes);
+}
+
+/** crash callback */
+void zb_crasher_callback(ZBCrasherModel *model, ZBCrasherConfig *config, ZBCrasherFileManager* fileManager) {
+    
+    //debug alert
+    if (config.debugAlert) {
+        crash_information_alert_runlooping(model);
+    }
+    
+    // write file
+    [fileManager zb_crasherWriteReport:model];
+    
+    // av cloud
+    
+    // call back
+    if (__crash_callback != NULL) {
+        __crash_callback(model);
+    }
+    
+    // un register
+    [ZBNSExceptionHandler zb_unRegisterUncaughtExceptionHandler];
+    [ZBSignalHandler zb_unRegisterSignalHandler];
+}
+
+@interface ZBCrasherManager()
 
 @property (nonatomic, strong) ZBCrasherFileManager *fileManager;
 
@@ -59,9 +117,6 @@ static ZBCrasherCallback crashCallback;
 
 - (id) initWithBundle:(NSBundle *)bundle configuration:(ZBCrasherConfig *)configuration;
 - (id) initWithApplicationIdentifier: (NSString *) applicationIdentifier appVersion: (NSString *) applicationVersion appMarketingVersion: (NSString *) applicationMarketingVersion configuration: (ZBCrasherConfig *) configuration;
-/// Crash information pop up
-/// @param crashModel Crash information model
-- (void)crashInformationAlert:(ZBCrasherModel *)crashModel;
 
 @end
 
@@ -88,7 +143,7 @@ static ZBCrasherManager *_manager = nil;
 }
 
 /**
- * Initialize a new PLCrashReporter instance with a default configuration appropraite
+ * Initialize a new ZBCrasher instance with a default configuration appropraite
  * for release deployment.
  */
 - (instancetype) init {
@@ -96,7 +151,7 @@ static ZBCrasherManager *_manager = nil;
 }
 
 /**
- * Initialize a new PLCrashReporter instance with the given configuration.
+ * Initialize a new ZBCrasher instance with the given configuration.
  *
  * @param configuration The configuration to be used by this reporter instance.
  */
@@ -118,7 +173,7 @@ static ZBCrasherManager *_manager = nil;
  * report data.
  *
  * You may use this to submit the report to your own HTTP server, over e-mail, or even parse and
- * introspect the report locally using the PLCrashReport API.
+ * introspect the report locally using the ZBCrasher API.
  *
  * @return Returns nil if the crash report data could not be loaded.
  */
@@ -131,7 +186,7 @@ static ZBCrasherManager *_manager = nil;
  * report data.
  *
  * You may use this to submit the report to your own HTTP server, over e-mail, or even parse and
- * introspect the report locally using the PLCrashReport API.
+ * introspect the report locally using the ZBCrasher API.
  
  * @param outError A pointer to an NSError object variable. If an error occurs, this pointer
  * will contain an error object indicating why the pending crash report could not be
@@ -184,10 +239,10 @@ static ZBCrasherManager *_manager = nil;
  * result in a crash report being written prior to application exit.
  *
  * This method must only be invoked once. Further invocations will throw
- * a PLCrashReporterException.
+ * a ZBCrasherException.
  *
  * @param outError A pointer to an NSError object variable. If an error occurs, this pointer
- * will contain an error in the PLCrashReporterErrorDomain indicating why the Crash Reporter
+ * will contain an error in the ZBCrasherErrorDomain indicating why the Crash Reporter
  * could not be enabled. If no error occurs, this parameter will be left unmodified. You may
  * specify nil for this parameter, and no error information will be provided.
  *
@@ -196,11 +251,29 @@ static ZBCrasherManager *_manager = nil;
  *
  * @par Registering Multiple Reporters
  *
- * Only one PLCrashReporter instance may be enabled in a process; attempting to enable an additional instance
- * will return NO and a PLCrashReporterErrorResourceBusy error, and the reporter will not be enabled.
+ * Only one ZBCrasher instance may be enabled in a process; attempting to enable an additional instance
+ * will return NO and a ZBCrasherErrorResourceBusy error, and the reporter will not be enabled.
  * This restriction may be removed in a future release.
  */
 - (BOOL) enableCrasherAndReturnError: (NSError **) outError {
+    
+    /* last crsah callback*/
+    if (__last_crash_callback) {
+        
+        NSString *crashString = [NSString stringWithContentsOfFile:[_fileManager crashReportPath] encoding:NSUTF8StringEncoding error:nil];
+        if (crashString) {
+            ZBCrasherModel *model = [ZBCrasherModel modelWithDictionary:crashString.toDictionary];
+            if (model) {
+                __last_crash_callback(model);
+                [self purgePendingCrashReport];
+#ifdef ZBDEBUG
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    zbcrasher_alert_message(model);
+                });
+#endif
+            }
+        }
+    }
     
     /* Check for programmer error */
     if (_enabled)
@@ -211,49 +284,25 @@ static ZBCrasherManager *_manager = nil;
         return NO;
     
     /* register crash report */
-    [self zb_registerCrashReport];
+    void (^crasher_callback)(ZBCrasherModel *model) = ^(ZBCrasherModel *model) {
+        zb_crasher_callback(model, self->_config, self->_fileManager);
+    };
+    [ZBSignalHandler zb_registerSignalHandler:crasher_callback];
+    [ZBNSExceptionHandler zb_registerUncaughtExceptionHandler:crasher_callback];
     
     /* Success */
     _enabled = YES;
     return YES;
 }
 
-- (void)zb_registerCrashReport {
-    
-    // exception handler
-    [ZBNSExceptionHandler handler].delegate = self;
-    [ZBNSExceptionHandler zb_registerUncaughtExceptionHandler];
-    
-    // signal handler
-    [ZBSignalHandler handler].delegate = self;
-    [ZBSignalHandler zb_registerSignalHandler];
-}
-
-// MARK: - crash handler delegate
-- (void)zb_crashHandlerModel:(nonnull ZBCrasherModel *)model {
-    
-    //debug alert
-    if (_config.debugAlert) {
-        [self crashInformationAlert:model];
-    }
-    
-    // write file
-    
-    // av cloud
-    
-    // call back
-    if (crashCallback != NULL) {
-        crashCallback(model);
-    }
-    
-    // un register
-    [ZBNSExceptionHandler zb_unRegisterUncaughtExceptionHandler];
-    [ZBSignalHandler zb_unRegisterSignalHandler];
-}
-
 /* set crash call back*/
 - (void)setCrasherCallBack:(ZBCrasherCallback)callback {
-    crashCallback = callback;
+    __crash_callback = callback;
+}
+
+/* set last crash call back */
+- (void) setLastCrasherCallBack:(ZBCrasherCallback) callback {
+    __last_crash_callback = callback;
 }
 
 @end
@@ -299,7 +348,17 @@ static ZBCrasherManager *_manager = nil;
         basePath = [paths objectAtIndex: 0];
     }
     
+    /* Create file management class */
     _fileManager = [[ZBCrasherFileManager alloc] initWithBasePath:basePath appId:appIdPath];
+    
+    /* debug alert initialization */
+    if (_config.debugAlert) {
+        __debug_alert_vc = [UIAlertController alertControllerWithTitle:@"Crashed!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *continue_ac = [UIAlertAction actionWithTitle:@"continue" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            __alert_continue_clicked = YES;
+        }];
+        [__debug_alert_vc addAction:continue_ac];
+    }
     
     return self;
 }
@@ -336,33 +395,6 @@ static ZBCrasherManager *_manager = nil;
     }
 
     return [self initWithApplicationIdentifier: bundleIdentifier appVersion: bundleVersion appMarketingVersion:bundleMarketingVersion configuration: configuration];
-}
-
-/// Crash information pop up
-/// @param crashModel Crash information model
-- (void)crashInformationAlert:(ZBCrasherModel *)crashModel {
-    
-    CFRunLoopRef runLoop = CFRunLoopGetCurrent();
-    CFArrayRef allModes = CFRunLoopCopyAllModes(runLoop);
-    
-    NSString *crashString = [NSString stringWithFormat:@"timestamp：%@\n name：%@\n reason：%@\n stacks：%@\n bundleId：%@\n bundleVersion：%@\n appVersion：%@\n", crashModel.timestamp, crashModel.name, crashModel.reason, crashModel.stacks, crashModel.bundleId, crashModel.bundleVersion, crashModel.appVersion];
-    
-    UIAlertController *alert_vc = [UIAlertController alertControllerWithTitle:@"Crash！" message:crashString  preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *_continue = [UIAlertAction actionWithTitle:@"continue" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-        dismissed = YES;
-    }];
-    [alert_vc addAction:_continue];
-    [UIApplication.sharedApplication.delegate.window.rootViewController presentViewController:alert_vc animated:YES completion:nil];
-    
-    //When the exception handling message is received, let the program start runloop to prevent the program from dying
-    while (!dismissed) {
-        for (NSString *mode in (__bridge NSArray *)allModes)
-        {
-            CFRunLoopRunInMode((CFStringRef)mode, 0.001, false);
-        }
-    }
-    //When you click the Cancel button in the pop-up view, isdimised = yes, the above loop will jump out
-    CFRelease(allModes);
 }
 
 @end
