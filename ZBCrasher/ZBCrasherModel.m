@@ -33,7 +33,9 @@ static NSString *_bundleIdentifier  = @"";
 static NSString *_bundleVersion     = @"";
 static NSString *_appVersion        = @"";
 
-static dispatch_once_t __t;
+static dispatch_once_t __bundle_id_t;
+static dispatch_once_t __build_version_t;
+static dispatch_once_t __app_version_t;
 
 @implementation ZBCrasherModel
 
@@ -42,7 +44,7 @@ static dispatch_once_t __t;
 }
 
 - (NSString *)bundleId {
-    dispatch_once(&__t, ^{
+    dispatch_once(&__bundle_id_t, ^{
         
         _bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
         
@@ -61,15 +63,15 @@ static dispatch_once_t __t;
     return _bundleIdentifier;
 }
 
-- (NSString *)bundleVersion {
-    dispatch_once(&__t, ^{
-        _bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey: (NSString *) kCFBundleVersionKey];
+- (NSString *)buildVersion {
+    dispatch_once(&__build_version_t, ^{
+        _buildVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey: (NSString *) kCFBundleVersionKey];
     });
-    return _bundleVersion;
+    return _buildVersion;
 }
 
 - (NSString *)appVersion {
-    dispatch_once(&__t, ^{
+    dispatch_once(&__app_version_t, ^{
         _appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"];
     });
     return _appVersion;
@@ -83,7 +85,7 @@ static dispatch_once_t __t;
         @"timestamp"    : self.timestamp        ?:@"" ,
         
         @"bundleId"     : self.bundleId         ?:@"" ,
-        @"bundleVersion": self.bundleVersion    ?:@"" ,
+        @"buildVersion" : self.buildVersion     ?:@"" ,
         @"appVersion"   : self.appVersion       ?:@""
     };
 }
@@ -99,7 +101,7 @@ static dispatch_once_t __t;
     model.timestamp     = dict[@"timestamp"];
     
     model.bundleId      = dict[@"bundleId"];
-    model.bundleVersion = dict[@"bundleVersion"];
+    model.buildVersion  = dict[@"buildVersion"];
     model.appVersion    = dict[@"appVersion"];
     return model;
 }

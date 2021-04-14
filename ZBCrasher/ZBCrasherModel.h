@@ -54,8 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 // device info
 @property (nonatomic, copy) NSString * bundleId;
-@property (nonatomic, copy) NSString * bundleVersion;
 @property (nonatomic, copy) NSString * appVersion;
+@property (nonatomic, copy) NSString * buildVersion;
 
 /*
  * The model to dictionary.
