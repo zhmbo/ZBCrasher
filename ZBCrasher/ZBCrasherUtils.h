@@ -27,10 +27,13 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ZBCrasherUtils : NSObject
+
++ (UIWindow *)getRootWindow ;
 
 @end
 

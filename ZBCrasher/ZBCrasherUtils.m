@@ -25,10 +25,23 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
 #import "ZBCrasherUtils.h"
 #import "ZBCrasherMacros.h"
 
 @implementation ZBCrasherUtils
+
++ (UIWindow *)getRootWindow {
+
+    NSArray *windows = [[UIApplication sharedApplication] windows];
+    for(UIWindow *window in [windows reverseObjectEnumerator]) {
+        if ([window isKindOfClass:[UIWindow class]] &&
+            window.windowLevel == UIWindowLevelNormal &&
+            CGRectEqualToRect(window.bounds, [UIScreen mainScreen].bounds))
+            return window;
+    }
+    return [UIApplication sharedApplication].keyWindow;
+}
 
 @end
 
@@ -48,8 +61,8 @@
     
     NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
     
-    NSRange range = {0,jsonString.length};
-    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+//    NSRange range = {0,jsonString.length};
+//    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
     
     NSRange range2 = {0,mutStr.length};
     [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
