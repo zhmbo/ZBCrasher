@@ -34,8 +34,10 @@
 
 /* Library Imports */
 #import <ZBCrasher/ZBCrasher.h>
+#import <ZBCrasher/ZBCrasherManager.h>
 #else
 #import "ZBCrasher.h"
+#import "ZBCrasherManager.h"
 #endif
 /* Exceptions */
 extern NSString *ZBCrasherException;
