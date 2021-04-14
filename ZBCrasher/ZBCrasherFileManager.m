@@ -37,7 +37,7 @@ static NSString *ZBCRASH_CACHE_DIR = @"com.itzhangbao.zbcrasher.data";
 
 /** @internal
  * Crash Report file name. */
-static NSString *ZBCRASH_LIVE_CRASHREPORT = @"live_report.zbcrasher";
+static NSString *ZBCRASH_LIVE_CRASHREPORT = @"live_report.log";
 
 /** @internal
  * Directory containing crash reports queued for sending. */
@@ -64,10 +64,12 @@ static NSString *ZBCRASH_QUEUED_DIR = @"queued_reports";
     NSDictionary *crashDict = model.toDictionary;
     NSString *crashStr = crashDict.toString;
     NSError *error;
-    [crashStr writeToFile:[self crasherDirectory] atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    if (error) {
-        ZBC_LOG(@"Error -- write crash report fail!");
-        return NO;
+    if (crashStr != nil) {
+        [crashStr writeToFile:[self crashReportPath] atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        if (error) {
+            ZBC_LOG(@"Error -- write crash report fail!");
+            return NO;
+        }
     }
     return YES;
 }
