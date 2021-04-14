@@ -27,19 +27,11 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "ZBCrasherHandlerDelegate.h"
+#import "ZBCrasherManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZBNSExceptionHandler : NSObject {
-@private
-    NSUncaughtExceptionHandler *_ot_handler;
-}
-
-/**
- * Single
- */
-+ (instancetype)handler;
+@interface ZBNSExceptionHandler : NSObject
 
 /**
  * register UncaughtExceptionHandler
@@ -47,23 +39,13 @@ NS_ASSUME_NONNULL_BEGIN
  * First, determine whether there is an `uncaughtexception handler`.
  * Then save it temporarily, and then implement other `handles method` after our own crash information processing.
  */
-+ (void)zb_registerUncaughtExceptionHandler;
++ (void)zb_registerUncaughtExceptionHandler:(ZBCrasherCallback)callback;;
 
 /**
  * Unsubscribe `uncaughtexceptionhandler`
  * postprocessing the information after crashing and breaking up.
  */
 + (void)zb_unRegisterUncaughtExceptionHandler;
-
-/**
- * Send crash log through this Agreement.
- */
-@property (nonatomic, weak) id<ZBCrasherHandlerDelegate> delegate;
-
-/**
- * Temporarily store the `handler` of other implementations.
- */
-@property (nonatomic, readonly) NSUncaughtExceptionHandler *ot_handler;
 
 @end
 

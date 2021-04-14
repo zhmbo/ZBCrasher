@@ -63,25 +63,17 @@ int zb_signalIndex(int signal);
 
 static int s_fatal_signal_num = sizeof(s_fatal_signals) / sizeof(s_fatal_signals[0]);
 
-static id _handler;
-static dispatch_once_t t;
+static ZBCrasherCallback __callback;
 
 @implementation ZBSignalHandler
 
 // MARK: public
 
 /**
- * Single
- */
-+ (instancetype)handler {
-    dispatch_once(&t, ^{ _handler = [[ZBSignalHandler alloc] init]; });
-    return _handler;
-}
-
-/**
  * linux error signal capture
  */
-+ (void)zb_registerSignalHandler {
++ (void)zb_registerSignalHandler:(ZBCrasherCallback)callback {
+    __callback = callback;
     for (int i = 0; i < s_fatal_signal_num; ++i) {
         signal(s_fatal_signals[i], zb_signalHandler);
     }
@@ -108,9 +100,9 @@ void zb_signalHandler(int signal)
     
     NSArray *callStacks = [ZBCrasherBacktrace backtrace];
     
-    NSString *name = [[NSString alloc] initWithUTF8String:s_fatal_signal_names[zb_signalIndex(signal)]];
+    NSString *name = @"SIGNAL";
     
-    NSString *reason = @"SIGNAL";
+    NSString *reason = [[NSString alloc] initWithUTF8String:s_fatal_signal_names[zb_signalIndex(signal)]];
     
     ZBCrasherModel *model = [ZBCrasherModel new];
     model.stacks = callStacks;
@@ -118,9 +110,8 @@ void zb_signalHandler(int signal)
     model.reason = reason;
     
     // Send model to implementation proxy class
-    ZBSignalHandler *_handler = [ZBSignalHandler handler];
-    if (_handler.delegate && [_handler.delegate respondsToSelector:@selector(zb_crashHandlerModel:)]) {
-        [_handler.delegate zb_crashHandlerModel:model];
+    if (__callback) {
+        __callback(model);
     }
 }
 

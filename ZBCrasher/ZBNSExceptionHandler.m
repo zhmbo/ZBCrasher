@@ -28,25 +28,18 @@
 
 #import "ZBNSExceptionHandler.h"
 #import "ZBCrasherModel.h"
+#import "ZBCrasherMacros.h"
+#import "ZBCrasherManager.h"
 
 void zb_uncaughtExceptionHandler(NSException * exception);
 
-static id _handler;
-static dispatch_once_t t;
+static NSUncaughtExceptionHandler *_ot_handler;
+
+static ZBCrasherCallback __callback;
 
 @implementation ZBNSExceptionHandler
 
-@synthesize ot_handler = _ot_handler;
-
 // MARK: public
-
-/**
- * Single
- */
-+ (instancetype)handler {
-    dispatch_once(&t, ^{ _handler = [[ZBNSExceptionHandler alloc] init]; });
-    return _handler;
-}
 
 /**
  * register UncaughtExceptionHandler
@@ -54,8 +47,10 @@ static dispatch_once_t t;
  * First, determine whether there is an `uncaughtexception handler`
  * Then save it temporarily, and then implement other `handles method` after our own crash information processing
  */
-+ (void)zb_registerUncaughtExceptionHandler {
-    [[ZBNSExceptionHandler handler] zb_registerUncaughtExceptionHandler];
++ (void)zb_registerUncaughtExceptionHandler:(ZBCrasherCallback)callback {
+    __callback = callback;
+    _ot_handler = NSGetUncaughtExceptionHandler();
+    NSSetUncaughtExceptionHandler(&zb_uncaughtExceptionHandler);
 }
 
 /**
@@ -63,19 +58,10 @@ static dispatch_once_t t;
  * postprocessing the information after crashing and breaking up.
  */
 + (void)zb_unRegisterUncaughtExceptionHandler {
-    [[ZBNSExceptionHandler handler] zb_unRegisterUncaughtExceptionHandler];
+    NSSetUncaughtExceptionHandler(nil);
 }
 
 // MARK: private
-
-- (void)zb_registerUncaughtExceptionHandler {
-    _ot_handler = NSGetUncaughtExceptionHandler();
-    NSSetUncaughtExceptionHandler(&zb_uncaughtExceptionHandler);
-}
-
-- (void)zb_unRegisterUncaughtExceptionHandler {
-    NSSetUncaughtExceptionHandler(nil);
-}
 
 void zb_uncaughtExceptionHandler(NSException *exception) {
     
@@ -90,14 +76,13 @@ void zb_uncaughtExceptionHandler(NSException *exception) {
     model.reason = reason;
     
     // Send model to implementation proxy class
-    ZBNSExceptionHandler *_handler = [ZBNSExceptionHandler handler];
-    if (_handler.delegate && [_handler.delegate respondsToSelector:@selector(zb_crashHandlerModel:)]) {
-        [_handler.delegate zb_crashHandlerModel:model];
+    if (__callback) {
+        __callback(model);
     }
     
     // Implement other programs to deal with crash information
-    if ([ZBNSExceptionHandler handler].ot_handler) {
-        [ZBNSExceptionHandler handler].ot_handler(exception);
+    if (_ot_handler) {
+        _ot_handler(exception);
     }
 }
 
