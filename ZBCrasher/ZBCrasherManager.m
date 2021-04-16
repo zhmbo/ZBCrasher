@@ -28,21 +28,19 @@
 
 #import <UIKit/UIKit.h>
 
-#if __has_include(<ZBCrasherManager/ZBCrasherManager.h>)
+#if __has_include(<ZBCrasher/ZBCrasherManager.h>)
 #import <ZBCrasher/ZBCrasher.h>
 #import <ZBCrasher/ZBCrasherManager.h>
-#import <ZBCrasher/ZBCrasherMacros.h>
 #else
 #import "ZBCrasher.h"
 #import "ZBCrasherManager.h"
-#import "ZBCrasherMacros.h"
 #endif
 
+#import "ZBCrasherMacros.h"
 #import "ZBNSExceptionHandler.h"
 #import "ZBSignalHandler.h"
 #import "ZBCrasherFileManager.h"
 #import "ZBCrasherUtils.h"
-
 
 /* @internal
  * crash call back */
@@ -95,8 +93,6 @@ void zb_crasher_callback(ZBCrasherModel *model, ZBCrasherConfig *config, ZBCrash
     // write file
     [fileManager zb_crasherWriteReport:model];
     
-    // av cloud
-    
     // call back
     if (__crash_callback != NULL) {
         __crash_callback(model);
@@ -106,12 +102,6 @@ void zb_crasher_callback(ZBCrasherModel *model, ZBCrasherConfig *config, ZBCrash
     [ZBNSExceptionHandler zb_unRegisterUncaughtExceptionHandler];
     [ZBSignalHandler zb_unRegisterSignalHandler];
 }
-
-@interface ZBCrasherManager()
-
-@property (nonatomic, strong) ZBCrasherFileManager *fileManager;
-
-@end
 
 @interface ZBCrasherManager (PrivateMethods)
 
@@ -264,13 +254,25 @@ static ZBCrasherManager *_manager = nil;
         if (crashString) {
             ZBCrasherModel *model = [ZBCrasherModel modelWithDictionary:crashString.toDictionary];
             if (model) {
+                /* Send the last crash log to the callback executor */
                 __last_crash_callback(model);
-                [self purgePendingCrashReport];
+                
+                /* Send the last crash log to the av-cloud.*/
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+                if (_avcloud && [_avcloud respondsToSelector:@selector(sendCrashReportsToAvocCloudWith:)]) {
+                    [_avcloud performSelector:@selector(sendCrashReportsToAvocCloudWith:) withObject:model];
+#pragma clang diagnostic pop
+                }
+                
 #ifdef ZBDEBUG
+                /* Delay execution and wait for the loading of 'rootwindow' to complete */
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     zbcrasher_alert_message(model);
                 });
 #endif
+                /* Clear the last crash log stored in the sandbox */
+                [self purgePendingCrashReport];
             }
         }
     }
@@ -338,6 +340,20 @@ static ZBCrasherManager *_manager = nil;
     _applicationIdentifier = applicationIdentifier;
     _applicationVersion = applicationVersion;
     _applicationMarketingVersion = applicationMarketingVersion;
+    
+    /* Determine whether to initialize AVOSCloud according to the parameters in config */
+    if (_config.appId.isNonull && _config.appKey.isNonull) {
+        _avcloud = [[NSClassFromString(@"ZBCrasherAVCloud") alloc] init];
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+        if (_avcloud && [_avcloud respondsToSelector:@selector(initAVCloudWithConfiguration:)]) {
+            [_avcloud performSelector:@selector(initAVCloudWithConfiguration:) withObject:configuration];
+#pragma clang diagnostic pop
+        }else {
+            ZBC_LOG(@"Warning: Not find AVOSCloud.framework, please add pod 'ZBCrasher/AVOSCloud' at podfile");
+        }
+    }
     
     /* No occurances of '/' should ever be in a bundle ID, but just to be safe, we escape them */
     NSString *appIdPath = [applicationIdentifier stringByReplacingOccurrencesOfString: @"/" withString: @"_"];

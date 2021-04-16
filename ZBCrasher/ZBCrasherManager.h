@@ -36,6 +36,8 @@
 #import "ZBCrasherModel.h"
 #endif
 
+@class ZBCrasherFileManager,ZBCrasherAVCloud;
+
 NS_ASSUME_NONNULL_BEGIN
 
 /**
@@ -50,6 +52,12 @@ typedef void (^ZBCrasherCallback)(ZBCrasherModel *crashModel);
 @private
     /** Reporter configuration */
     __strong ZBCrasherConfig *_config;
+    
+    /** Reporter file manager */
+    __strong ZBCrasherFileManager *_fileManager;
+    
+    /** Reporter avos cloud */
+    __strong id _avcloud;
     
     /** YES if the crash reporter has been enabled */
     BOOL _enabled;
