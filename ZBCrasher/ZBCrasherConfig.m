@@ -42,7 +42,7 @@
  * Initialize a new ZBCrasherConfig instance using the default configuration.
  */
 - (instancetype)init {
-    return [self initWithBasePath:nil appId:nil appKey:nil];
+    return [self initWithBasePath:nil appId:nil appKey:nil serverURLString:nil];
 }
 
 /**
@@ -51,7 +51,10 @@
  * @param basePath The base path to save the crash data
  */
 - (instancetype)initWithBasePath:(NSString *)basePath {
-    return [self initWithBasePath:basePath appId:nil appKey:nil];
+    return [self initWithBasePath:basePath
+                            appId:nil
+                           appKey:nil
+                  serverURLString:nil];
 }
 
 /**
@@ -61,8 +64,12 @@
  * @param appKey Initialize the key used by avcloud.
  */
 - (instancetype)initWithAppId:(NSString *)appId
-                       appKey:(NSString *)appKey {
-    return [self initWithBasePath:nil appId:appId appKey:appKey];
+                       appKey:(NSString *)appKey
+              serverURLString:(NSString *)serverURLString {
+    return [self initWithBasePath:nil
+                            appId:appId
+                           appKey:appKey
+                  serverURLString:serverURLString];
 }
 
 /**
@@ -75,6 +82,7 @@
 - (instancetype)initWithBasePath:(NSString *)basePath
                            appId:(nullable NSString *)appId
                           appKey:(nullable NSString *)appKey
+                 serverURLString:(NSString *)serverURLString
 {
     if ((self = [super init]) == nil)
         return nil;
@@ -82,6 +90,7 @@
     _basePath = basePath;
     _appId = appId;
     _appKey = appKey;
+    _serverURLString = serverURLString;
     
     _debugAlert = YES;
     _debugLog = YES;

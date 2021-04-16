@@ -49,9 +49,11 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param appId Initialize the id used by avcloud.
  * @param appKey Initialize the key used by avcloud.
+ * @param serverURLString Initialize the url used by avcloud.
  */
 - (instancetype)initWithAppId:(NSString *)appId
-                       appKey:(NSString *)appKey;
+                       appKey:(NSString *)appKey
+              serverURLString:(NSString *)serverURLString;
 
 /**
  * Initialize a new ZBCrasherConfig instance.
@@ -59,10 +61,12 @@ NS_ASSUME_NONNULL_BEGIN
  * @param basePath The base path to save the crash data.
  * @param appId Initialize the id used by avcloud.
  * @param appKey Initialize the key used by avcloud.
+ * @param serverURLString Initialize the url used by avcloud.
  */
 - (instancetype)initWithBasePath:(nullable NSString *)basePath
                            appId:(nullable NSString *)appId
-                          appKey:(nullable NSString *)appKey;
+                          appKey:(nullable NSString *)appKey
+                 serverURLString:(nullable NSString *)serverURLString;
 
 /** Crash pop up in development environment */
 @property (nonatomic, assign) BOOL debugAlert;
@@ -78,6 +82,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** The app key to init avcloud */
 @property(nonatomic, readonly) NSString *appKey;
+
+/** The app key to init avcloud */
+@property(nonatomic, readonly) NSString *serverURLString;
 
 @end
 
