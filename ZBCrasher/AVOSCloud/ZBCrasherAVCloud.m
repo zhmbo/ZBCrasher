@@ -27,7 +27,42 @@
  */
 
 #import "ZBCrasherAVCloud.h"
+#import "ZBCrasherUtils.h"
+#import "ZBCrasherMacros.h"
+#import "ZBCrasherModel.h"
+#import "ZBCrasherConfig.h"
+
+#if __has_include(<AVOSCloud/AVOSCloud.h>)
+#import <AVOSCloud/AVOSCloud.h>
+#else
+#import "AVOSCloud.h"
+#endif
 
 @implementation ZBCrasherAVCloud
+
+- (void) initAVCloudWithConfiguration:(ZBCrasherConfig *) configuration;
+{
+    ZBC_LOG(@"AVOSCloud Initializing...");
+    if (!configuration.appId.isNonull && !configuration.appKey.isNonull) {
+        ZBC_LOG(@"Error: Failed to initialize AVOSCloud, initialization parameter is empty!");
+    }else {
+        [AVOSCloud setApplicationId:configuration.appId clientKey:configuration.appKey serverURLString:configuration.serverURLString];
+    }
+}·
+
+- (void)sendCrashReportsToAvocCloudWith:(ZBCrasherModel *)model {
+    
+    ZBC_LOG(@"Sending last crash log to AVOSCloud...");
+    
+    AVObject *avObj = [AVObject objectWithClassName:@"ZBCraher" dictionary:model.toDictionary];
+    [avObj saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (succeeded) {
+            ZBC_LOG(@"Succes: save crash log to avsocloud.");
+        }else {
+            ZBC_LOG(@"Error: save crash log to avsocloud.");
+        }
+    }];
+    
+}
 
 @end

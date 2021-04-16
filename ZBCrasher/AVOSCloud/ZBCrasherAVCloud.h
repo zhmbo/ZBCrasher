@@ -27,10 +27,15 @@
  */
 #import <Foundation/Foundation.h>
 
+@class ZBCrasherModel, ZBCrasherConfig;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ZBCrasherAVCloud : NSObject
 
+- (void) initAVCloudWithConfiguration:(ZBCrasherConfig *) configuration;
+
+- (void)sendCrashReportsToAvocCloudWith:(ZBCrasherModel *)model ;
 @end
 
 NS_ASSUME_NONNULL_END
