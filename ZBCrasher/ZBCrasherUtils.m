@@ -100,4 +100,25 @@
     return dic;
 }
 
+- (BOOL)isNonull {
+    if (!self)  return NO;
+    
+    if (self == nil) return NO;
+    
+    if ([self isKindOfClass:[NSNull class]]) return NO;
+    
+    if ([self isEqual:[NSNull null]]) return NO;
+    
+    if (![self isKindOfClass:[NSString class]]) {
+        ZBC_LOG(@"The value not is `NSString` class of %@", self);
+        return NO;
+    }
+    
+    NSCharacterSet *set = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSString *trimmedStr = [self stringByTrimmingCharactersInSet:set];
+    if (!trimmedStr.length)  return NO;
+    
+    return YES;
+}
 @end
+

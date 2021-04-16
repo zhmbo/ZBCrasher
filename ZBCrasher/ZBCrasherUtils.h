@@ -45,7 +45,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString(ZBStringEx)
 
+/*
+ * Convert string dictionary to dictionary entity class
+ */
 - (NSDictionary *)toDictionary;
+
+/* Determine whether the string is null
+ * Returns the bool value, if there is a value, returns yes, otherwise returns No
+ */
+- (BOOL)isNonull;
 
 @end
 
